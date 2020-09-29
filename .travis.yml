@@ -1,0 +1,16 @@
+language: scala
+
+scala:
+    - 2.12.7
+
+script:
+    cd auction-web;sbt test;cd -
+
+cache:
+  directories:
+    - "$HOME/.ivy2/cache"
+    - "$HOME/.sbt"
+
+before_cache:
+  - find $HOME/.ivy2 -name "ivydata-*.properties" -delete
+  - find $HOME/.sbt  -name "*.lock"               -delete
