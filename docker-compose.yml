@@ -1,0 +1,31 @@
+version: '3'
+services:
+    auction-web:
+        image: ankurjainnitrr/auctionsystem
+        container_name: auction-web
+        networks:
+            - app-network
+        depends_on:
+            - mongodb
+
+    nginx:
+        image: nginx:alpine
+        container_name: nginx
+        restart: unless-stopped
+        ports:
+            - "8080:80"
+        networks:
+            - app-network
+        volumes:
+            - ./nginx/conf.d/:/etc/nginx/conf.d/
+        depends_on:
+            - auction-web
+
+    mongodb:
+        image: mongo:3.1.5
+        networks:
+            - app-network
+
+networks:
+  app-network:
+    driver: bridge

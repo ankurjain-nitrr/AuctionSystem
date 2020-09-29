@@ -49,6 +49,13 @@ public class UserDAOMongoImpl extends BaseMongoDAO implements IUserDAO {
     }
 
     @Override
+    public User getByEmail(String email) {
+        Document userDocument =
+                getCollection().find(new Document(COL_FIELD_EMAIL, email)).first();
+        return fromDocument(userDocument);
+    }
+
+    @Override
     public void update(User user) throws DataNotFoundException {
         BasicDBObject filterBson = new BasicDBObject();
         filterBson.put(COL_FIELD_ID, user.getId());

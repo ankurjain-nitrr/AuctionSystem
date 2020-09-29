@@ -9,6 +9,8 @@ public interface IUserDAO {
 
     User get(String userID);
 
+    User getByEmail(String email);
+
     void update(User user) throws DataNotFoundException;
 
     void delete(String userID) throws DataNotFoundException;

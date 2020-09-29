@@ -6,7 +6,10 @@
 
 GET     /ping                                   controllers.PingController.pingPong()
 
-GET     /prometheus                       	controllers.PingController.prometheus()
+GET     /prometheus                             controllers.PingController.prometheus()
 
-#================================== Internal ==================================
+#================================== User Routes ==================================
 
+POST    /users                                  controllers.UserController.create(req: Request)
+
+GET     /users/:uid                             controllers.UserController.get(uid: String)

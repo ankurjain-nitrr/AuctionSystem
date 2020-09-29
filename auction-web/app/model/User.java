@@ -1,9 +1,7 @@
 package model;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -18,6 +16,10 @@ public class User {
     private String email;
     private String passwordMD5;
     private long created;
+
+    private User() {
+        this.id = UUID.randomUUID().toString();
+    }
 
     public User(String name, String email, String passwordMD5) {
         this.id = UUID.randomUUID().toString();

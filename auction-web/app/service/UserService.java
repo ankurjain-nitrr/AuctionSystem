@@ -11,6 +11,7 @@ import javax.inject.Singleton;
 @Singleton
 public class UserService {
 
+    @Inject
     private IUserDAO userDAO;
 
     @Inject
@@ -19,7 +20,7 @@ public class UserService {
     }
 
     public synchronized void create(User user) throws AlreadyExistsException {
-        User exisitingIfAny = userDAO.get(user.getId());
+        User exisitingIfAny = userDAO.getByEmail(user.getEmail());
         if (exisitingIfAny == null) {
             userDAO.create(user);
         } else {
@@ -27,4 +28,7 @@ public class UserService {
         }
     }
 
+    public synchronized User get(String uid) {
+        return userDAO.get(uid);
+    }
 }
