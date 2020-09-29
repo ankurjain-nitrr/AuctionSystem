@@ -3,10 +3,19 @@ language: scala
 scala:
     - 2.12.7
 
+services:
+  - docker
+
 jdk: openjdk8
 
 script:
-    cd auction-web;sbt test;cd -
+    cd auction-web;sbt test packageBin;cd -
+
+after_success:
+- docker login -u $DOCKER_USER -p $DOCKER_PASS
+- export IMAGE_NAME=ankurjainnitrr/auctionsystem
+- docker build -t $IMAGE_NAME auction-web
+- docker push $IMAGE_NAME
 
 cache:
   directories:

@@ -1,4 +1,4 @@
-name := "auctio-web"
+name := "auction-web"
 organization := "ankur"
 maintainer := "ankurjain.nitrr@gmail.com"
 version := "1.0-SNAPSHOT"
