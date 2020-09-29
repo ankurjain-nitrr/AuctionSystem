@@ -6,4 +6,4 @@ RUN unzip auction-web-1.0-SNAPSHOT.zip
 RUN rm auction-web-1.0-SNAPSHOT.zip
 RUN mv auction-web-1.0-SNAPSHOT /opt/
 EXPOSE 9000
-ENTRYPOINT [ "bash" ,"/opt/auctio-web-1.0-SNAPSHOT/bin/auction-web" ]
+ENTRYPOINT [ "bash" ,"/opt/auction-web-1.0-SNAPSHOT/bin/auction-web" ]
