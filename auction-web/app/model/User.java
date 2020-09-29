@@ -1,13 +1,19 @@
 package model;
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.UUID;
 
 @Getter
+@EqualsAndHashCode
+@AllArgsConstructor
 public class User {
 
     private String id;
+    @Setter
     private String name;
     private String email;
     private String passwordMD5;
