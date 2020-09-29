@@ -1,0 +1,12 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+#================================== Health ==================================
+
+GET     /ping                                   controllers.PingController.pingPong()
+
+GET     /prometheus                       	controllers.PingController.prometheus()
+
+#================================== Internal ==================================
+
