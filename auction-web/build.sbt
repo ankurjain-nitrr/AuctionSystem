@@ -15,7 +15,16 @@ libraryDependencies ++= Seq(
   "org.projectlombok" % "lombok" % "1.18.12",
   "io.micrometer" % "micrometer-registry-prometheus" % "1.1.1",
   "org.mongodb" % "mongo-java-driver" % "3.12.7",
-  "com.google.guava" % "guava" % "29.0-jre",
+  "com.google.guava" % "guava" % "27.1-jre",
   "junit" % "junit" % "4.11" % Test,
   "org.testcontainers" % "mongodb" % "1.14.3" % Test
+)
+
+jacocoExcludes in Test := Seq(
+  "controllers.Reverse*",
+  "controllers.javascript.*",
+  "model.*",
+  "Module",
+  "router.Routes*",
+  "*.routes*"
 )

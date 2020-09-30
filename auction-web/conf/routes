@@ -10,6 +10,12 @@ GET     /prometheus                             controllers.PingController.prome
 
 #================================== User Routes ==================================
 
-POST    /users                                  controllers.UserController.create(req: Request)
+POST    /user                                   controllers.UserController.create(req: Request)
 
-GET     /users/:uid                             controllers.UserController.get(uid: String)
+POST    /user/authenticate                      controllers.UserController.authenticate(req: Request)
+
+GET     /user/:uid                              controllers.UserController.get(uid: String)
+
+GET     /auction                                controllers.AuctionController.getAuctions(req: Request, start: Integer ?= 0, count: Integer ?= 10)
+
+POST    /auction/:itemCode/bid                  controllers.AuctionController.bid(req: Request, itemCode: String)

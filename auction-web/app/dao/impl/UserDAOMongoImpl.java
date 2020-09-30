@@ -2,10 +2,13 @@ package dao.impl;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import com.mongodb.DuplicateKeyException;
+import com.mongodb.MongoWriteException;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import dao.BaseMongoDAO;
 import dao.IUserDAO;
+import exception.AlreadyExistsException;
 import exception.DataNotFoundException;
 import model.User;
 import org.bson.Document;
@@ -22,7 +25,7 @@ import javax.validation.constraints.NotNull;
 @Singleton
 public class UserDAOMongoImpl extends BaseMongoDAO implements IUserDAO {
 
-    public static final String COLLECTION_NAME_BIDDING_AUCTION = "User";
+    public static final String COLLECTION_NAME_USER = "User";
 
     private static final String COL_FIELD_ID = "uid";
     private static final String COL_FIELD_NAME = "name";
@@ -32,12 +35,16 @@ public class UserDAOMongoImpl extends BaseMongoDAO implements IUserDAO {
 
     @Inject
     public UserDAOMongoImpl(MongoDBService mongoDBService) {
-        super(mongoDBService, Constants.DB_NAME_AUCTION, COLLECTION_NAME_BIDDING_AUCTION);
+        super(mongoDBService, Constants.DB_NAME_AUCTION, COLLECTION_NAME_USER);
     }
 
     @Override
-    public void create(@Nonnull User user) {
-        getCollection().insertOne(toDocument(user));
+    public void create(@Nonnull User user) throws AlreadyExistsException {
+        try {
+            getCollection().insertOne(toDocument(user));
+        } catch (MongoWriteException ex) {
+            throw new AlreadyExistsException(("User with email - " + user.getEmail() + " already present"), ex);
+        }
     }
 
     @Override

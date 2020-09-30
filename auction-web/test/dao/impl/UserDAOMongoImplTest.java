@@ -10,16 +10,14 @@ import service.MongoDBService;
 
 public class UserDAOMongoImplTest {
 
-
-    @BeforeClass
-    public static void startContainer() {
-        mongo.start();
-    }
-
     @ClassRule
     public static GenericContainer<?> mongo =
             new GenericContainer<>("mongo:3.1.5")
                     .withExposedPorts(27017);
+    @BeforeClass
+    public static void startContainer() {
+        mongo.start();
+    }
 
     @Test
     public void addUserTest() {

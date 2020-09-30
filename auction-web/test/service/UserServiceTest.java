@@ -1,11 +1,12 @@
 package service;
 
 import com.mongodb.MongoClient;
+import dao.IAuthenticationTokenDAO;
 import dao.IUserDAO;
+import dao.impl.AuthenticationTokenDAOMongoImpl;
 import dao.impl.UserDAOMongoImpl;
 import exception.AlreadyExistsException;
 import model.User;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -29,7 +30,8 @@ public class UserServiceTest {
         MongoClient mongoClient = new MongoClient(mongo.getHost(), mongo.getMappedPort(27017));
         MongoDBService mongoDBService = new MongoDBService(mongoClient);
         IUserDAO userDAO = new UserDAOMongoImpl(mongoDBService);
-        UserService userService = new UserService(userDAO);
+        IAuthenticationTokenDAO authenticationTokenDAO = new AuthenticationTokenDAOMongoImpl(mongoDBService);
+        UserService userService = new UserService(userDAO, authenticationTokenDAO);
         userService.create(createdUser);
         userService.create(createdUser);
     }

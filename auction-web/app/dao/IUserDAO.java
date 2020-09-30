@@ -1,11 +1,15 @@
 package dao;
 
+import com.google.inject.ImplementedBy;
+import dao.impl.UserDAOMongoImpl;
+import exception.AlreadyExistsException;
 import exception.DataNotFoundException;
 import model.User;
 
+@ImplementedBy(UserDAOMongoImpl.class)
 public interface IUserDAO {
 
-    void create(User user);
+    void create(User user) throws AlreadyExistsException;
 
     User get(String userID);
 
