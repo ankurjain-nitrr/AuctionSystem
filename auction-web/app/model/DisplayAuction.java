@@ -11,7 +11,8 @@ public class DisplayAuction {
 
     public DisplayAuction(Auction auction) {
         this.itemCode = auction.getItemCode();
-        this.winningPrice = auction.getWinningBidPrice();
+        this.winningPrice = auction.getWinningBidPrice() == null ?
+                auction.getBasePrice() : auction.getWinningBidPrice();
         this.stepRate = auction.getStepRate();
     }
 }

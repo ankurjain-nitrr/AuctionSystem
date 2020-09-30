@@ -4,6 +4,7 @@ import dao.IAuctionBidDAO;
 import dao.IAuctionDAO;
 import enums.BidStatus;
 import enums.BidStatusResponse;
+import exception.AlreadyExistsException;
 import exception.DataNotFoundException;
 import model.Auction;
 import model.AuctionBid;
@@ -36,6 +37,10 @@ public class AuctionService {
 
     public List<Auction> getAuctions(AuctionFilters auctionFilters, int start, int count) {
         return auctionDAO.get(auctionFilters, start, count);
+    }
+
+    public void create(Auction auction) throws AlreadyExistsException {
+        auctionDAO.create(auction);
     }
 
     public BidStatusResponse bid(AuctionBid auctionBid) throws DataNotFoundException {

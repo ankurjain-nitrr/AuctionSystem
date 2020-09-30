@@ -11,6 +11,7 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import play.mvc.Results;
 import service.UserService;
 
 import javax.inject.Inject;
@@ -29,11 +30,11 @@ public class UserController extends Controller {
         Objects.requireNonNull(user);
         try {
             userService.create(user);
-            return ok(Json.toJson(new DisplayUser(user)));
+            return created(Json.toJson(new DisplayUser(user)));
         } catch (AlreadyExistsException e) {
             log.error("Error creating user - " + user);
         }
-        return badRequest("User with email already exists - " + user.getEmail());
+        return Results.status(Http.Status.CONFLICT, "Already Exists");
     }
 
     public Result authenticate(Http.Request req) {

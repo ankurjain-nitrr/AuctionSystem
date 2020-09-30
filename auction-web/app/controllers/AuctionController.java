@@ -4,11 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import enums.AuctionStatus;
 import enums.BidStatus;
 import enums.BidStatusResponse;
+import exception.AlreadyExistsException;
 import exception.DataNotFoundException;
-import model.Auction;
-import model.AuctionBid;
-import model.AuctionFilters;
-import model.PaginatedAuctionListResponse;
+import lombok.extern.slf4j.Slf4j;
+import model.*;
 import play.libs.Json;
 import play.mvc.*;
 import security.Secured;
@@ -20,12 +19,25 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 public class AuctionController extends Controller {
 
     public static final String QUERY_PARAM_AUCTION_STATUS = "status";
 
     @Inject
     private AuctionService auctionService;
+
+    public Result create(Http.Request request) {
+        JsonNode jsonNode = request.body().asJson();
+        Auction auction = Json.fromJson(jsonNode, Auction.class);
+        try {
+            auctionService.create(auction);
+            return created(Json.toJson(new DisplayAuction(auction)));
+        } catch (AlreadyExistsException e) {
+            log.error("Auction already exits for - " + auction.getItemCode());
+        }
+        return Results.status(Http.Status.CONFLICT, "Already Exists");
+    }
 
     public Result getAuctions(Http.Request request, int start, int count) {
         Optional<String> status = Optional.ofNullable(request.getQueryString(QUERY_PARAM_AUCTION_STATUS));

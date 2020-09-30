@@ -1,9 +1,11 @@
 package dao.impl;
 
+import com.mongodb.MongoWriteException;
 import com.mongodb.client.FindIterable;
 import dao.BaseMongoDAO;
 import dao.IAuctionDAO;
 import enums.AuctionStatus;
+import exception.AlreadyExistsException;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import model.Auction;
@@ -32,7 +34,7 @@ public class AuctionDAOMongoImpl extends BaseMongoDAO implements IAuctionDAO {
     private static final String COL_FIELD_ITEM_CODE = "itemCode";
     private static final String COL_FIELD_BASE_PRICE = "basePrice";
     private static final String COL_FIELD_STEP_RATE = "stepRate";
-    private static final String COL_FIELD_AUCTION_STATUS= "auctionStatus";
+    private static final String COL_FIELD_AUCTION_STATUS = "auctionStatus";
     private static final String COL_FIELD_WINNING_BID_PRICE = "winningBidPrice";
     private static final String COL_FIELD_WINNING_BID_USER_ID = "winningBidUserId";
     private static final String COL_FIELD_CREATED = "c";
@@ -43,8 +45,12 @@ public class AuctionDAOMongoImpl extends BaseMongoDAO implements IAuctionDAO {
     }
 
     @Override
-    public void create(Auction auction) {
-        getCollection().insertOne(toDocument(auction));
+    public void create(Auction auction) throws AlreadyExistsException {
+        try {
+            getCollection().insertOne(toDocument(auction));
+        } catch (MongoWriteException ex) {
+            throw new AlreadyExistsException("Auction for item - " + auction.getItemCode() + " already exists");
+        }
     }
 
     @Override

@@ -16,6 +16,8 @@ POST    /user/authenticate                      controllers.UserController.authe
 
 GET     /user/:uid                              controllers.UserController.get(uid: String)
 
+POST    /auction                                controllers.AuctionController.create(req: Request)
+
 GET     /auction                                controllers.AuctionController.getAuctions(req: Request, start: Integer ?= 0, count: Integer ?= 10)
 
 POST    /auction/:itemCode/bid                  controllers.AuctionController.bid(req: Request, itemCode: String)

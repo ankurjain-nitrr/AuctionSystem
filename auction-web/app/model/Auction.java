@@ -22,6 +22,11 @@ public class Auction {
     private String winningBidUserId;
     private long created;
 
+    public Auction() {
+        this.auctionStatus = AuctionStatus.RUNNING;
+        this.created = System.currentTimeMillis();
+    }
+
     public Auction(String itemCode, int basePrice, int stepRate) {
         this.itemCode = itemCode;
         this.basePrice = basePrice;
