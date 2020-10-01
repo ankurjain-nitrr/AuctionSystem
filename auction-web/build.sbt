@@ -17,7 +17,8 @@ libraryDependencies ++= Seq(
   "org.mongodb" % "mongo-java-driver" % "3.12.7",
   "com.google.guava" % "guava" % "27.1-jre",
   "junit" % "junit" % "4.11" % Test,
-  "org.testcontainers" % "mongodb" % "1.14.3" % Test
+  "org.testcontainers" % "mongodb" % "1.14.3" % Test,
+  "org.mockito" % "mockito-all" % "1.10.19" % Test
 )
 
 jacocoExcludes in Test := Seq(

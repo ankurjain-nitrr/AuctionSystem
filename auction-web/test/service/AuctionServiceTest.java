@@ -6,10 +6,12 @@ import dao.IAuctionDAO;
 import dao.impl.AuctionBidDAOMongoImpl;
 import dao.impl.AuctionDAOMongoImpl;
 import enums.BidStatusResponse;
+import exception.AlreadyExistsException;
 import exception.DataNotFoundException;
 import model.Auction;
 import model.AuctionBid;
 import org.junit.*;
+import org.mockito.Mockito;
 import org.testcontainers.containers.GenericContainer;
 import service.lock.ILockService;
 import service.lock.impl.LockServiceStripedImpl;
@@ -32,12 +34,12 @@ public class AuctionServiceTest {
         MongoDBService mongoDBService = new MongoDBService(mongoClient);
         auctionDAO = new AuctionDAOMongoImpl(mongoDBService);
         auctionBidDAO = new AuctionBidDAOMongoImpl(mongoDBService);
-        ILockService lockService = new LockServiceStripedImpl();
+        ILockService lockService = Mockito.mock(LockServiceStripedImpl.class);
         auctionService = new AuctionService(auctionDAO, auctionBidDAO, lockService);
     }
 
     @Before
-    public void clearBiddings() {
+    public void clearBiddings() throws AlreadyExistsException {
         auctionBidDAO.drop();
         auctionDAO.drop();
         auctionDAO.create(new Auction("item", 30, 5));

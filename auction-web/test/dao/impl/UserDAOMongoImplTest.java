@@ -2,6 +2,7 @@ package dao.impl;
 
 import com.mongodb.MongoClient;
 import dao.IUserDAO;
+import exception.AlreadyExistsException;
 import exception.DataNotFoundException;
 import model.User;
 import org.junit.*;
@@ -20,7 +21,7 @@ public class UserDAOMongoImplTest {
     }
 
     @Test
-    public void addUserTest() {
+    public void addUserTest() throws AlreadyExistsException {
         User createdUser = new User("Ankur", "ankur@google.com", "!@#$%^&");
         String createdUserID = createdUser.getId();
         MongoClient mongoClient = new MongoClient(mongo.getHost(), mongo.getMappedPort(27017));
@@ -42,7 +43,7 @@ public class UserDAOMongoImplTest {
     }
 
     @Test
-    public void deleteExistingUserTest() throws DataNotFoundException {
+    public void deleteExistingUserTest() throws DataNotFoundException, AlreadyExistsException {
         User createdUser = new User("Ankur", "ankur@google.com", "!@#$%^&");
         String createdUserID = createdUser.getId();
         MongoClient mongoClient = new MongoClient(mongo.getHost(), mongo.getMappedPort(27017));
@@ -65,7 +66,7 @@ public class UserDAOMongoImplTest {
     }
 
     @Test
-    public void updateExistingUserTest() throws DataNotFoundException {
+    public void updateExistingUserTest() throws DataNotFoundException, AlreadyExistsException {
         User createdUser = new User("Ankur", "ankur@google.com", "!@#$%^&");
         String createdUserID = createdUser.getId();
         MongoClient mongoClient = new MongoClient(mongo.getHost(), mongo.getMappedPort(27017));

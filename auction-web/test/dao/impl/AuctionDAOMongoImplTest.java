@@ -3,6 +3,7 @@ package dao.impl;
 import com.mongodb.MongoClient;
 import dao.IAuctionDAO;
 import enums.AuctionStatus;
+import exception.AlreadyExistsException;
 import model.Auction;
 import model.AuctionFilters;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +40,7 @@ public class AuctionDAOMongoImplTest {
     }
 
     @Test
-    public void addAuction() {
+    public void addAuction() throws AlreadyExistsException {
         IAuctionDAO auctionDAO = getAuctionDAO();
         Auction auction = new Auction("item", 50, 5);
         auctionDAO.create(auction);
@@ -48,7 +49,7 @@ public class AuctionDAOMongoImplTest {
     }
 
     @Test
-    public void updateAuction() {
+    public void updateAuction() throws AlreadyExistsException {
         IAuctionDAO auctionDAO = getAuctionDAO();
         Auction auction = new Auction("item", 50, 5);
         auctionDAO.create(auction);
@@ -68,7 +69,7 @@ public class AuctionDAOMongoImplTest {
     }
 
     @Test
-    public void fetchRunningAuctionsFilter() {
+    public void fetchRunningAuctionsFilter() throws AlreadyExistsException {
         IAuctionDAO auctionDAO = getAuctionDAO();
         auctionDAO.drop();
         Auction auction = new Auction("item", 50, 5);
@@ -82,7 +83,7 @@ public class AuctionDAOMongoImplTest {
     }
 
     @Test
-    public void fetchRunningAuctionsPagination() {
+    public void fetchRunningAuctionsPagination() throws AlreadyExistsException {
         IAuctionDAO auctionDAO = getAuctionDAO();
         auctionDAO.drop();
         for(int i = 0; i < 7; i ++) {
