@@ -1,6 +1,5 @@
 package model;
 
-import com.fasterxml.jackson.annotation.JsonAnySetter;
 import lombok.*;
 
 import java.util.UUID;
@@ -14,19 +13,19 @@ public class User {
     @Setter
     private String name;
     private String email;
-    private String passwordMD5;
+    private String passwd;
     private long created;
 
     private User() {
         this.id = UUID.randomUUID().toString();
     }
 
-    public User(String name, String email, String passwordMD5) {
+    public User(String name, String email, String passwd) {
         this.id = UUID.randomUUID().toString();
         this.created = System.currentTimeMillis();
         this.name = name;
         this.email = email;
-        this.passwordMD5 = passwordMD5;
+        this.passwd = passwd;
     }
 
 }

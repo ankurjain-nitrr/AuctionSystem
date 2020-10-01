@@ -29,10 +29,10 @@ public class UserService {
         userDAO.create(user);
     }
 
-    public Optional<AuthenticationToken> authenticateAndGenerateToken(String email, String passwdmd5) {
+    public Optional<AuthenticationToken> authenticateAndGenerateToken(String email, String passwd) {
         Optional<AuthenticationToken> generatedToken = Optional.empty();
         User user = userDAO.getByEmail(email);
-        if (user != null && user.getPasswordMD5().equals(passwdmd5)) {
+        if (user != null && user.getPasswd().equals(passwd)) {
             AuthenticationToken authenticationToken =
                     new AuthenticationToken(user.getId(), generateToken(), EXPIRY_AUTHENTICATION_TOKEN_IN_DAYS);
             authenticationTokenDAO.create(authenticationToken);

@@ -1,8 +1,6 @@
 package dao.impl;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
-import com.mongodb.DuplicateKeyException;
 import com.mongodb.MongoWriteException;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
@@ -12,7 +10,6 @@ import exception.AlreadyExistsException;
 import exception.DataNotFoundException;
 import model.User;
 import org.bson.Document;
-import org.bson.conversions.Bson;
 import service.MongoDBService;
 import utils.Constants;
 
@@ -85,7 +82,7 @@ public class UserDAOMongoImpl extends BaseMongoDAO implements IUserDAO {
     @Nonnull
     private static Document toDocument(@NotNull User user) {
         return new Document().append(COL_FIELD_ID, user.getId()).append(COL_FIELD_NAME, user.getName())
-                .append(COL_FIELD_EMAIL, user.getEmail()).append(COL_FIELD_PASSWORD_MD5, user.getPasswordMD5())
+                .append(COL_FIELD_EMAIL, user.getEmail()).append(COL_FIELD_PASSWORD_MD5, user.getPasswd())
                 .append(COL_FIELD_CREATED, user.getCreated());
     }
 
