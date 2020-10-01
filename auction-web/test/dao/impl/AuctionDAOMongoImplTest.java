@@ -51,6 +51,7 @@ public class AuctionDAOMongoImplTest {
     @Test
     public void updateAuction() throws AlreadyExistsException {
         IAuctionDAO auctionDAO = getAuctionDAO();
+        auctionDAO.drop();
         Auction auction = new Auction("item", 50, 5);
         auctionDAO.create(auction);
         auction.setAuctionStatus(AuctionStatus.OVER);

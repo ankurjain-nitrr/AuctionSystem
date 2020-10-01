@@ -15,18 +15,26 @@ public class UserDAOMongoImplTest {
     public static GenericContainer<?> mongo =
             new GenericContainer<>("mongo:3.1.5")
                     .withExposedPorts(27017);
+    private static MongoDBService mongoDBService;
+    private static IUserDAO userDAO;
     @BeforeClass
     public static void startContainer() {
         mongo.start();
+        MongoClient mongoClient = new MongoClient(mongo.getHost(), mongo.getMappedPort(27017));
+        mongoDBService = new MongoDBService(mongoClient);
+        userDAO = new UserDAOMongoImpl(mongoDBService);
+    }
+
+    @Before
+    public void cleanup() {
+        userDAO.drop();
     }
 
     @Test
     public void addUserTest() throws AlreadyExistsException {
         User createdUser = new User("Ankur", "ankur@google.com", "!@#$%^&");
         String createdUserID = createdUser.getId();
-        MongoClient mongoClient = new MongoClient(mongo.getHost(), mongo.getMappedPort(27017));
-        MongoDBService mongoDBService = new MongoDBService(mongoClient);
-        IUserDAO userDAO = new UserDAOMongoImpl(mongoDBService);
+
         userDAO.create(createdUser);
         User retrievedUser = userDAO.get(createdUserID);
         Assert.assertEquals(createdUser, retrievedUser);

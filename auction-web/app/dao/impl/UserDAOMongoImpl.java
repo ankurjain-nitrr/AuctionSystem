@@ -82,6 +82,11 @@ public class UserDAOMongoImpl extends BaseMongoDAO implements IUserDAO {
         }
     }
 
+    @Override
+    public void drop() {
+        getCollection().drop();
+    }
+
     @Nonnull
     private static Document toDocument(@NotNull User user) {
         return new Document().append(COL_FIELD_ID, user.getId()).append(COL_FIELD_NAME, user.getName())

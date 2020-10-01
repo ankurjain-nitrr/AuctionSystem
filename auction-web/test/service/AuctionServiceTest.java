@@ -8,6 +8,7 @@ import dao.impl.AuctionDAOMongoImpl;
 import enums.BidStatusResponse;
 import exception.AlreadyExistsException;
 import exception.DataNotFoundException;
+import exception.IllegalOperationException;
 import model.Auction;
 import model.AuctionBid;
 import org.junit.*;
@@ -46,41 +47,41 @@ public class AuctionServiceTest {
     }
 
     @Test
-    public void testBidResponseInvalidBid() throws DataNotFoundException {
+    public void testBidResponseInvalidBid() throws DataNotFoundException, IllegalOperationException {
         BidStatusResponse response =
                 auctionService.bid(new AuctionBid("user1", "item", -1));
         Assert.assertEquals(BidStatusResponse.INVALID_VALUE_BID, response);
     }
 
     @Test(expected = DataNotFoundException.class)
-    public void testBidResponseInvalidAuction() throws DataNotFoundException {
+    public void testBidResponseInvalidAuction() throws DataNotFoundException, IllegalOperationException {
         BidStatusResponse response =
                 auctionService.bid(new AuctionBid("user1", "ite", 40));
     }
 
     @Test()
-    public void testBidResponseTooLowBid() throws DataNotFoundException {
+    public void testBidResponseTooLowBid() throws DataNotFoundException, IllegalOperationException {
         BidStatusResponse response =
                 auctionService.bid(new AuctionBid("user1", "item", 1));
         Assert.assertEquals(BidStatusResponse.TOO_LOW, response);
     }
 
     @Test()
-    public void testBidResponseStepRate() throws DataNotFoundException {
+    public void testBidResponseStepRate() throws DataNotFoundException, IllegalOperationException {
         BidStatusResponse response =
                 auctionService.bid(new AuctionBid("user1", "item", 32));
         Assert.assertEquals(BidStatusResponse.REJECTED_BID, response);
     }
 
     @Test()
-    public void testBidResponseValidBid() throws DataNotFoundException {
+    public void testBidResponseValidBid() throws DataNotFoundException, IllegalOperationException {
         BidStatusResponse response =
                 auctionService.bid(new AuctionBid("user1", "item", 35));
         Assert.assertEquals(BidStatusResponse.ACCEPTED, response);
     }
 
     @Test()
-    public void testBidResponseRebid() throws DataNotFoundException {
+    public void testBidResponseRebid() throws DataNotFoundException, IllegalOperationException {
         BidStatusResponse responseFirst =
                 auctionService.bid(new AuctionBid("user1", "item", 35));
         BidStatusResponse responseSecond = auctionService.bid(new AuctionBid("user1", "item", 40));
@@ -88,7 +89,7 @@ public class AuctionServiceTest {
     }
 
     @Test()
-    public void testBidResponseBeatingBid() throws DataNotFoundException {
+    public void testBidResponseBeatingBid() throws DataNotFoundException, IllegalOperationException {
         BidStatusResponse responseFirst =
                 auctionService.bid(new AuctionBid("user1", "item", 35));
         BidStatusResponse responseSecond = auctionService.bid(new AuctionBid("user2", "item", 40));
@@ -96,7 +97,7 @@ public class AuctionServiceTest {
     }
 
     @Test()
-    public void testBidResponseBeatedByHighestBid() throws DataNotFoundException {
+    public void testBidResponseBeatedByHighestBid() throws DataNotFoundException, IllegalOperationException {
         BidStatusResponse responseFirst =
                 auctionService.bid(new AuctionBid("user1", "item", 35));
         BidStatusResponse responseSecond = auctionService.bid(new AuctionBid("user2", "item", 37));

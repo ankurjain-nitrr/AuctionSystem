@@ -19,4 +19,5 @@ public interface IUserDAO {
 
     void delete(String userID) throws DataNotFoundException;
 
+    void drop();
 }
