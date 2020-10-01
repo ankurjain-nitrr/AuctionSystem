@@ -8,15 +8,16 @@ import exception.AlreadyExistsException;
 import exception.DataNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import model.*;
+import play.api.http.MimeTypes;
 import play.libs.Json;
 import play.mvc.*;
 import security.Secured;
 import service.AuctionService;
 import utils.Constants;
 
+import javax.activation.MimeType;
 import javax.inject.Inject;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -32,7 +33,7 @@ public class AuctionController extends Controller {
         Auction auction = Json.fromJson(jsonNode, Auction.class);
         try {
             auctionService.create(auction);
-            return created(Json.toJson(new DisplayAuction(auction)));
+            return created(Json.toJson(new DisplayAuction(auction))).as(Http.MimeTypes.JSON);
         } catch (AlreadyExistsException e) {
             log.error("Auction already exits for - " + auction.getItemCode());
         }
@@ -44,10 +45,9 @@ public class AuctionController extends Controller {
         Optional<AuctionStatus> auctionStatus = status.map(AuctionStatus::valueOf);
         AuctionFilters auctionFilters = AuctionFilters.builder().status(auctionStatus.orElse(null)).build();
         List<Auction> auctions = auctionService.getAuctions(auctionFilters, start, count);
-        String currentPageURI = request.uri();
         PaginatedAuctionListResponse paginatedAuctionListResponse =
-                PaginatedAuctionListResponse.Builder.from(auctions, start, count, currentPageURI);
-        return ok(Json.toJson(paginatedAuctionListResponse));
+                PaginatedAuctionListResponse.Builder.from(auctions, start, count, request);
+        return ok(paginatedAuctionListResponse.toJSON().toString()).as(Http.MimeTypes.JSON);
     }
 
     @Security.Authenticated(Secured.class)

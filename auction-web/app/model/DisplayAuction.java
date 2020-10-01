@@ -2,8 +2,10 @@ package model;
 
 import lombok.Getter;
 
+import java.io.Serializable;
+
 @Getter
-public class DisplayAuction {
+public class DisplayAuction implements Serializable {
 
     private String itemCode;
     private int winningPrice;

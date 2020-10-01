@@ -11,4 +11,7 @@ public class Constants {
 
     public static final String HEADER_KEY_USER_ID = "userId";
     public static final String HEADER_TOKEN = "token";
+
+    public static final String URL_SCHEME = "http";
+
 }

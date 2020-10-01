@@ -1,15 +1,17 @@
 package model;
 
-import akka.http.javadsl.model.Uri;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import play.Logger;
-import play.libs.typedmap.TypedKey;
+import org.apache.http.client.utils.URIBuilder;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import play.libs.Json;
 import play.mvc.Http;
+import utils.Constants;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -17,30 +19,47 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class PaginatedAuctionListResponse {
 
+    public static final String QUERY_PARAM_START = "start";
     private List<DisplayAuction> auctions;
     private String next;
 
     public static class Builder {
         public static PaginatedAuctionListResponse from(List<Auction> auctionList, int start,
-                                                        int count, String requestURI) {
+                                                        int count, Http.Request request) {
             List<DisplayAuction> displayAuctions = auctionList.stream()
                     .map(DisplayAuction::new).collect(Collectors.toList());
-            URI uri = null;
-            try {
-                uri = new URI(requestURI);
-            } catch (URISyntaxException ignored) {
-            }
-            Objects.requireNonNull(uri, "Malformed uri shared - " + requestURI);
 
             // setting next page url when items are available
             String nextPageURI = null;
             if (auctionList.size() >= count) {
-                nextPageURI = new Http.RequestBuilder()
-                        .uri(uri).attr(TypedKey.create("start"), start + count).build().uri();
-                log.debug("Generated next page url :" + nextPageURI + ", for received current page - " + requestURI);
+                URIBuilder uriBuilder = null;
+                try {
+                    uriBuilder = new URIBuilder(request.path()).setHost(request.host()).setScheme(Constants.URL_SCHEME);
+                } catch (URISyntaxException e) {
+                }
+                for(Map.Entry<String, String[]> param : request.queryString().entrySet()) {
+                    if(!param.getKey().equals(QUERY_PARAM_START)) {
+                        uriBuilder.addParameter(param.getKey(), param.getValue()[0]);
+                    }
+                }
+                Objects.requireNonNull(uriBuilder);
+                uriBuilder.addParameter(QUERY_PARAM_START, String.valueOf(start + count));
+                nextPageURI = uriBuilder.toString();
+                log.debug("Generated next page url :" + nextPageURI);
             }
             return new PaginatedAuctionListResponse(displayAuctions, nextPageURI);
         }
+    }
+
+    public JSONObject toJSON() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("next", next);
+        JSONArray items = new JSONArray();
+        for (DisplayAuction auction : auctions) {
+            items.put(new JSONObject(Json.toJson(auction).toString()));
+        }
+        jsonObject.put("auctions", items);
+        return jsonObject;
     }
 
 }
