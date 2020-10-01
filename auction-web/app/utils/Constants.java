@@ -7,7 +7,7 @@ public class Constants {
 
     // ALL MONGO CONSTANTS
 
-    public static final String DB_NAME_AUCTION = "Auction";
+    public static final String DB_NAME_AUCTION = "AuctionSystem";
 
     public static final String HEADER_KEY_USER_ID = "userId";
     public static final String HEADER_TOKEN = "token";

@@ -44,9 +44,8 @@ public class AuctionDAOMongoImpl extends BaseMongoDAO implements IAuctionDAO {
     public AuctionDAOMongoImpl(MongoDBService mongoDBService) {
         super(mongoDBService, Constants.DB_NAME_AUCTION, COLLECTION_NAME_AUCTION);
         getCollection().createIndex(new Document(COL_FIELD_ITEM_CODE, 1), new IndexOptions().unique(true));
-        getCollection().createIndex(new Document(COL_FIELD_CREATED, -1), new IndexOptions().unique(true));
-        getCollection().createIndex(new Document().append(COL_FIELD_AUCTION_STATUS, 1).append(COL_FIELD_CREATED, -1),
-                new IndexOptions().unique(true));
+        getCollection().createIndex(new Document(COL_FIELD_CREATED, -1));
+        getCollection().createIndex(new Document().append(COL_FIELD_AUCTION_STATUS, 1).append(COL_FIELD_CREATED, -1));
     }
 
     @Override
