@@ -7,8 +7,6 @@ services:
             - app-network
         depends_on:
             - mongodb
-        ports:
-            - "4000:4000"
 
     nginx:
         image: nginx:alpine
