@@ -42,7 +42,7 @@ public class AuctionController extends Controller {
     public Result getAuctions(Http.Request request, int start, int count) {
         Optional<String> status = Optional.ofNullable(request.getQueryString(QUERY_PARAM_AUCTION_STATUS));
         Optional<AuctionStatus> auctionStatus = status.map(AuctionStatus::valueOf);
-        AuctionFilters auctionFilters = AuctionFilters.builder().status(auctionStatus.get()).build();
+        AuctionFilters auctionFilters = AuctionFilters.builder().status(auctionStatus.orElse(null)).build();
         List<Auction> auctions = auctionService.getAuctions(auctionFilters, start, count);
         String currentPageURI = request.uri();
         PaginatedAuctionListResponse paginatedAuctionListResponse =
