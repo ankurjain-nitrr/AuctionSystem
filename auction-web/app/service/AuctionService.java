@@ -2,10 +2,12 @@ package service;
 
 import dao.IAuctionBidDAO;
 import dao.IAuctionDAO;
+import enums.AuctionStatus;
 import enums.BidStatus;
 import enums.BidStatusResponse;
 import exception.AlreadyExistsException;
 import exception.DataNotFoundException;
+import exception.IllegalOperationException;
 import model.Auction;
 import model.AuctionBid;
 import model.AuctionFilters;
@@ -43,10 +45,13 @@ public class AuctionService {
         auctionDAO.create(auction);
     }
 
-    public BidStatusResponse bid(AuctionBid auctionBid) throws DataNotFoundException {
+    public BidStatusResponse bid(AuctionBid auctionBid) throws DataNotFoundException, IllegalOperationException {
         Auction auction = getAuction(auctionBid.getItemCode());
         if (Objects.isNull(auction)) {
             throw new DataNotFoundException("auction not found");
+        }
+        if(auction.getAuctionStatus().equals(AuctionStatus.OVER)) {
+            throw new IllegalOperationException("Cannot bid when auction over for item - " + auction.getItemCode());
         }
         ILock lock = lockService.getLock(auctionBid.getItemCode());
         BidStatusResponse bidStatusResponse;

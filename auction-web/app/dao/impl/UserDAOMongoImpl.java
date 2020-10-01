@@ -2,6 +2,7 @@ package dao.impl;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoWriteException;
+import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import dao.BaseMongoDAO;
@@ -33,6 +34,8 @@ public class UserDAOMongoImpl extends BaseMongoDAO implements IUserDAO {
     @Inject
     public UserDAOMongoImpl(MongoDBService mongoDBService) {
         super(mongoDBService, Constants.DB_NAME_AUCTION, COLLECTION_NAME_USER);
+        getCollection().createIndex(new Document(COL_FIELD_ID, 1), new IndexOptions().unique(true));
+        getCollection().createIndex(new Document(COL_FIELD_EMAIL, 1), new IndexOptions().unique(true));
     }
 
     @Override

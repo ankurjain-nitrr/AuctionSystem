@@ -1,5 +1,6 @@
 package dao.impl;
 
+import com.mongodb.client.model.IndexOptions;
 import dao.BaseMongoDAO;
 import dao.IAuctionBidDAO;
 import enums.BidStatusResponse;

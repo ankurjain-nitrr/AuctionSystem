@@ -6,6 +6,7 @@ import enums.BidStatus;
 import enums.BidStatusResponse;
 import exception.AlreadyExistsException;
 import exception.DataNotFoundException;
+import exception.IllegalOperationException;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import model.*;
@@ -60,7 +61,8 @@ public class AuctionController extends Controller {
     @ApiImplicitParams({@ApiImplicitParam(name = "body", value = "bid price in json")})
     @ApiResponses(value = {@ApiResponse(code = 201, message = "Bid was accepted"),
             @ApiResponse(code = 406, message = "Bid was rejected"),
-            @ApiResponse(code = 404, message = "Auction for item not found")})
+            @ApiResponse(code = 404, message = "Auction for item not found"),
+            @ApiResponse(code = 403, message = "Auction is over")})
     @Security.Authenticated(Secured.class)
     public Result bid(@ApiParam(hidden = true, required = false) Http.Request req, String itemCode) {
         JsonNode requestBody = req.body().asJson();
@@ -73,6 +75,8 @@ public class AuctionController extends Controller {
             response = auctionService.bid(auctionBid);
         } catch (DataNotFoundException e) {
             return notFound("Auction for item not found - " + itemCode);
+        } catch (IllegalOperationException e) {
+            return forbidden("The auction is over - " + itemCode);
         }
         if (response.getBidStatus().equals(BidStatus.ACCEPTED)) {
             return created(response.getReason());

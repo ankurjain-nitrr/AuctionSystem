@@ -2,6 +2,7 @@ package dao.impl;
 
 import com.mongodb.MongoWriteException;
 import com.mongodb.client.FindIterable;
+import com.mongodb.client.model.IndexOptions;
 import dao.BaseMongoDAO;
 import dao.IAuctionDAO;
 import enums.AuctionStatus;
@@ -42,6 +43,10 @@ public class AuctionDAOMongoImpl extends BaseMongoDAO implements IAuctionDAO {
     @Inject
     public AuctionDAOMongoImpl(MongoDBService mongoDBService) {
         super(mongoDBService, Constants.DB_NAME_AUCTION, COLLECTION_NAME_AUCTION);
+        getCollection().createIndex(new Document(COL_FIELD_ITEM_CODE, 1), new IndexOptions().unique(true));
+        getCollection().createIndex(new Document(COL_FIELD_CREATED, -1), new IndexOptions().unique(true));
+        getCollection().createIndex(new Document().append(COL_FIELD_AUCTION_STATUS, 1).append(COL_FIELD_CREATED, -1),
+                new IndexOptions().unique(true));
     }
 
     @Override
@@ -63,7 +68,8 @@ public class AuctionDAOMongoImpl extends BaseMongoDAO implements IAuctionDAO {
             log.debug("will return all auctions");
         }
         List<Auction> result = new ArrayList<>();
-        getCollection().find(filter).skip(start).limit(count).forEach((Consumer<? super Document>) document -> {
+        getCollection().find(filter).skip(start).limit(count
+        ).sort(new Document(COL_FIELD_CREATED, -1)).forEach((Consumer<? super Document>) document -> {
             result.add(fromDocument(document));
         });
         return result;
