@@ -8,6 +8,8 @@ GET     /ping                                   controllers.PingController.pingP
 
 GET     /prometheus                             controllers.PingController.prometheus()
 
+GET     /swag.json                              controllers.ApiHelpController.getResources
+
 #================================== User Routes ==================================
 
 POST    /user                                   controllers.UserController.create(req: Request)
