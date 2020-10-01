@@ -33,9 +33,9 @@ public class AuctionController extends Controller {
 
     @ApiResponses(value = {@ApiResponse(code = 201, message = "Auction created"),
             @ApiResponse(code = 409, message = "Action for item already exists")})
-    @ApiImplicitParams({@ApiImplicitParam(name = "body", value = "auction details", dataType = "model.Auction")})
-    public Result create(@ApiParam(hidden = true) Http.Request request) {
-        JsonNode jsonNode = request.body().asJson();
+    @ApiImplicitParams({@ApiImplicitParam(name = "body", value = "auction details")})
+    public Result create(@ApiParam(hidden = true) Http.Request req) {
+        JsonNode jsonNode = req.body().asJson();
         Auction auction = Json.fromJson(jsonNode, Auction.class);
         try {
             auctionService.create(auction);
@@ -47,26 +47,26 @@ public class AuctionController extends Controller {
     }
 
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Get paginated list of auctions with next page url")})
-    public Result getAuctions(@ApiParam(hidden = true) Http.Request request, int start, int count) {
-        Optional<String> status = Optional.ofNullable(request.getQueryString(QUERY_PARAM_AUCTION_STATUS));
+    public Result getAuctions(@ApiParam(hidden = true) Http.Request req, int start, int count) {
+        Optional<String> status = Optional.ofNullable(req.getQueryString(QUERY_PARAM_AUCTION_STATUS));
         Optional<AuctionStatus> auctionStatus = status.map(AuctionStatus::valueOf);
         AuctionFilters auctionFilters = AuctionFilters.builder().status(auctionStatus.orElse(null)).build();
         List<Auction> auctions = auctionService.getAuctions(auctionFilters, start, count);
         PaginatedAuctionListResponse paginatedAuctionListResponse =
-                PaginatedAuctionListResponse.Builder.from(auctions, start, count, request);
+                PaginatedAuctionListResponse.Builder.from(auctions, start, count, req);
         return ok(paginatedAuctionListResponse.toJSON().toString()).as(Http.MimeTypes.JSON);
     }
 
-    @ApiImplicitParams({@ApiImplicitParam(name = "body", value = "bid price in json", dataType = "com.fasterxml.jackson.databind.JsonNode")})
+    @ApiImplicitParams({@ApiImplicitParam(name = "body", value = "bid price in json")})
     @ApiResponses(value = {@ApiResponse(code = 201, message = "Bid was accepted"),
             @ApiResponse(code = 406, message = "Bid was rejected"),
             @ApiResponse(code = 404, message = "Auction for item not found")})
     @Security.Authenticated(Secured.class)
-    public Result bid(@ApiParam(hidden = true) Http.Request request, String itemCode) {
-        JsonNode requestBody = request.body().asJson();
+    public Result bid(@ApiParam(hidden = true) Http.Request req, String itemCode) {
+        JsonNode requestBody = req.body().asJson();
         Integer bidPrice = requestBody.get("bidPrice").asInt(-1);
         // this wont be null coz authorized
-        Optional<String> userId = request.getHeaders().get(Constants.HEADER_KEY_USER_ID);
+        Optional<String> userId = req.getHeaders().get(Constants.HEADER_KEY_USER_ID);
         AuctionBid auctionBid = new AuctionBid(userId.get(), itemCode, bidPrice);
         BidStatusResponse response = null;
         try {
