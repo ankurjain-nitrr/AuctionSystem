@@ -34,7 +34,7 @@ public class AuctionController extends Controller {
     @ApiResponses(value = {@ApiResponse(code = 201, message = "Auction created"),
             @ApiResponse(code = 409, message = "Action for item already exists")})
     @ApiImplicitParams({@ApiImplicitParam(name = "body", value = "auction details")})
-    public Result create(@ApiParam(hidden = true) Http.Request req) {
+    public Result create(@ApiParam(hidden = true, required = false) Http.Request req) {
         JsonNode jsonNode = req.body().asJson();
         Auction auction = Json.fromJson(jsonNode, Auction.class);
         try {
@@ -47,7 +47,7 @@ public class AuctionController extends Controller {
     }
 
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Get paginated list of auctions with next page url")})
-    public Result getAuctions(@ApiParam(hidden = true) Http.Request req, int start, int count) {
+    public Result getAuctions(@ApiParam(hidden = true, required = false) Http.Request req, int start, int count) {
         Optional<String> status = Optional.ofNullable(req.getQueryString(QUERY_PARAM_AUCTION_STATUS));
         Optional<AuctionStatus> auctionStatus = status.map(AuctionStatus::valueOf);
         AuctionFilters auctionFilters = AuctionFilters.builder().status(auctionStatus.orElse(null)).build();
@@ -62,7 +62,7 @@ public class AuctionController extends Controller {
             @ApiResponse(code = 406, message = "Bid was rejected"),
             @ApiResponse(code = 404, message = "Auction for item not found")})
     @Security.Authenticated(Secured.class)
-    public Result bid(@ApiParam(hidden = true) Http.Request req, String itemCode) {
+    public Result bid(@ApiParam(hidden = true, required = false) Http.Request req, String itemCode) {
         JsonNode requestBody = req.body().asJson();
         Integer bidPrice = requestBody.get("bidPrice").asInt(-1);
         // this wont be null coz authorized
